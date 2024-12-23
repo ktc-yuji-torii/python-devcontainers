@@ -1,0 +1,34 @@
+{
+    "files.insertFinalNewline": true,
+    "chat.commandCenter.enabled": true,
+    "github.copilot.chat.localeOverride": "ja",
+    "github.copilot.chat.search.semanticTextResults": true,
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    "github.copilot.chat.inlineChatCompletionTrigger.enabled": true,
+    "github.copilot.chat.temporalContext.enabled": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.biome": "explicit",
+        "source.removeUnusedImports": "explicit",
+        "source.sortImports": "explicit",
+        "source.fixAll.stylelint": "explicit"
+    },
+    "editor.defaultFormatter": "biomejs.biome",
+    "cSpell.words": [
+        "devcontainers",
+        "gofmt",
+        "goimports",
+        "ktc-yuji-torii",
+        "labstack",
+        "preinstall"
+    ],
+    "[go]": {
+        "editor.defaultFormatter": "golang.go"
+    },
+    "azureFunctions.deploySubpath": "backend",
+    "azureFunctions.scmDoBuildDuringDeployment": true,
+    "azureFunctions.pythonVenv": ".venv",
+    "azureFunctions.projectLanguage": "Python",
+    "azureFunctions.projectRuntime": "~4",
+    "debug.internalConsoleOptions": "neverOpen",
+    "azureFunctions.projectLanguageModel": 2
+}

@@ -1,0 +1,215 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "devcontainer",
+  "steps": [
+    {
+      "directory": ".devcontainer",
+      "description": "## `.devcontainer` ディレクトリ\n\ndevcontainer の設定ファイルを配置するディレクトリ",
+      "title": ".devcontainer ディレクトリ"
+    },
+    {
+      "file": ".devcontainer/devcontainer.json",
+      "description": "###  `.devcontainer/devcontainer.json` - `service`\n\nservice: このプロパティは、VS Code が Dev Container に接続する際に使用するサービスの名前を指定します。\n\"devcontainer\": ここでは、docker-compose.yml ファイル内で定義された devcontainer サービスを使用するように設定されています",
+      "line": 6
+    },
+    {
+      "file": ".devcontainer/devcontainer.json",
+      "description": "## devcontainer.json - `name`\n\ndevcontainer の Docker Container名\nDevcontainer の metadata で自動設定\n\n[Dev Container metadata reference](https://containers.dev/implementors/json_reference/)",
+      "line": 4,
+      "title": "devcontainer.json - `name`"
+    },
+    {
+      "file": ".devcontainer/devcontainer.json",
+      "description": "## `devcontainer.json` - `dockerComposeFile`\n\nDev Container で利用する docker-compose.yml ファイル\n\n### `../docker-compose.yml`\n\n実装するサービスなどを定義する `docker-compose`\nDev Container に依存しない。\n\n### `docker-compose.yml`\n\nDev Container 環境のサービスを定義する",
+      "line": 5,
+      "title": "devcontainer.json - `dockerComposeFile`",
+      "selection": {
+        "start": {
+          "line": 1,
+          "character": 5
+        },
+        "end": {
+          "line": 1,
+          "character": 22
+        }
+      }
+    },
+    {
+      "file": "docker-compose.yml",
+      "description": "## `docker-compose.yml`\nこの `docker-compose.yml` ファイルは、一般的なアプリケーションのサービス（例: `backend`, `database`）を立ち上げるために使用されます。また、外部ネットワークの設定も含まれています。\n\n### サービスの定義\n\n以下に、必要に応じてサービスを追加することができます。例えば、`backend` と `database` サービスを追加する場合は、以下のように記述します。\n\n以下に、`backend` と `database` サービスを追加する例を示します。`backend` サービスは Go アプリケーションを起動するサンプルです。\n\n```yaml\nservices:\n  backend:\n    image: golang:latest\n    networks:\n      - common-external-network\n    ports:\n      - \"8080:8080\"\n    volumes:\n      - ./backend:/go/src/app\n    working_dir: /go/src/app\n    command: go run main.go\n\n  database:\n    image: postgres:latest\n    networks:\n      - common-external-network\n    environment:\n      POSTGRES_USER: user\n      POSTGRES_PASSWORD: password\n      POSTGRES_DB: mydb\n\nnetworks:\n  common-external-network:\n    external: true\n```",
+      "line": 1,
+      "selection": {
+        "start": {
+          "line": 1,
+          "character": 5
+        },
+        "end": {
+          "line": 1,
+          "character": 23
+        }
+      }
+    },
+    {
+      "file": "docker-compose.yml",
+      "description": "## docker-compose.yml - `networks`\n\nこの `networks` は、Dockerネットワークを定義するセクションです。\n\n### 内容の詳細と仕組み\n- `networks`: Dockerネットワークを定義するセクションです。\n    - `common-external-network`: ネットワークの名前です。\n        - `external`: true: このネットワークは外部に存在することを示しています。すでに存在するネットワークを使用する場合に設定します。\n\n### 仕組み\nこの設定により、`common-external-network` という名前の外部ネットワークが存在する場合、そのネットワークが使用されます。存在しない場合は、`.devcontainer/initialize.sh` スクリプトによって新たに作成されます。\n\nこの外部ネットワークを使用することで、複数のコンテナが同じネットワーク上で通信できるようになります。例えば、異なる Docker Compose プロジェクトやスタックが同じネットワークを共有し、相互に通信することが可能になります。これにより、マイクロサービスアーキテクチャのような複雑なアプリケーションの構築が容易になります。\n\n### 各プロジェクトで自動設定されることのメリット\n- **一貫性の確保**: ネットワーク設定が自動的に行われるため、設定ミスを防ぎ、一貫性を保つことができます。\n- **簡単な環境構築**: 手動でネットワークを設定する必要がないため、迅速に環境を構築できます。\n- **プロジェクト間の互換性**: 各プロジェクトが同じネットワーク設定を共有することで、プロジェクト間の互換性が向上し、統合が容易になります。",
+      "line": 3
+    },
+    {
+      "file": ".devcontainer/docker-compose.yml",
+      "description": "## `.devcontainer/docker-compose.yml` ファイルの説明\n\nこの `docker-compose.yml` ファイルは、Dev Container で使用するサービスを定義しています。以下に、各セクションの詳細を説明します。\n\n### サービスの定義\n\n#### `devcontainer` サービス\n\n`devcontainer` サービスは、開発環境用のコンテナを定義しています。このコンテナは、VS Code の Dev Containers 拡張機能と連携して使用されます。\n\n### 各設定の詳細\n\n- `build`:\n  - `context`: ビルドコンテキストのディレクトリを指定します。ここでは、プロジェクトのルートディレクトリを指定しています。\n  - `dockerfile`: 使用する Dockerfile のパスを指定します。ここでは、`.devcontainer/Dockerfile` を指定しています。\n\n- `environment`:\n  - `TZ`: タイムゾーンを設定します。ここでは `Asia/Tokyo` を指定しています。\n  - `ENV`: 環境変数を設定します。ここでは `local` を指定しています。\n\n- `volumes`:\n  - `..:/workspaces:cached`: ホストのプロジェクトディレクトリをコンテナ内の `/workspaces` ディレクトリにマウントします。\n  - `/var/run/docker.sock:/var/run/docker.sock`: Docker ソケットをコンテナにマウントします。これにより、コンテナ内から Docker コマンドを実行できます。\n\n- `network_mode`:\n  - `\"host\"`: コンテナがホストのネットワークスタックを使用するように設定します。これにより、ホストと同じネットワーク環境で動作します。\n\n- `command`:\n  - `/bin/sh -c \"while sleep 1000; do :; done\"`: デフォルトのコマンドを上書きして、コンテナが終了しないようにします。これは、開発環境でコンテナを常に稼働させておくために使用されます。\n\n### コメントアウトされた設定\n\n- `cap_add` と `security_opt`:\n  - `cap_add` と `security_opt` の設定は、ptrace ベースのデバッガ（例: C++, Go, Rust）を使用する場合に有効にします。これにより、デバッガが正常に動作するための権限を追加します。\n",
+      "line": 1
+    },
+    {
+      "file": ".devcontainer/Dockerfile",
+      "description": "`mcr.microsoft.com/devcontainers/base:ubuntu`: Microsoft Container Registry (MCR) から取得される Dev Container 用のベースイメージです。このイメージは、Ubuntu をベースにしており、開発環境に必要な基本的なツールや設定が含まれています。\n\n[microsoft/vscode\\-devcontainers \\- Docker Image \\| Docker Hub](https://hub.docker.com/r/microsoft/vscode-devcontainers)",
+      "line": 1,
+      "selection": {
+        "start": {
+          "line": 1,
+          "character": 2
+        },
+        "end": {
+          "line": 1,
+          "character": 45
+        }
+      }
+    },
+    {
+      "file": ".devcontainer/devcontainer.json",
+      "description": "###  `.devcontainer/devcontainer.json` - `service`\n\n`service`: このプロパティは、VS Code が Dev Container に接続する際に使用するサービスの名前を指定します。\n\n- \"devcontainer\": ここでは、`.devcontainer/docker-compose.yml` ファイル内で定義された devcontainer サービスを使用するように設定されています",
+      "line": 6,
+      "selection": {
+        "start": {
+          "line": 3,
+          "character": 29
+        },
+        "end": {
+          "line": 3,
+          "character": 42
+        }
+      }
+    },
+    {
+      "file": ".devcontainer/devcontainer.json",
+      "description": "###  `.devcontainer/devcontainer.json` - `workspaceFolder`\n\n`workspaceFolder`: プロパティは、VS Code が Dev Container に接続したときにデフォルトで開くワークスペースフォルダのパスを指定します。\n\n- `/workspaces/${localWorkspaceFolderBasename}`: ここでは、コンテナ内の `/workspaces` ディレクトリにホストのワークスペースフォルダがマウントされ、そのフォルダがデフォルトで開かれるように設定されています。\n- `${localWorkspaceFolderBasename}`: これは、ホストマシン上のワークスペースフォルダのベース名（フォルダ名のみ）を指します。例えば、ホスト上のワークスペースフォルダが `/home/user/myproject` であれば、`myproject` がベース名となります。\n\n\n#### 仕組み\nこの設定により、VS Code が Dev Container に接続した際に、ホストマシンのワークスペースフォルダがコンテナ内の `/workspaces` ディレクトリにマウントされ、そのフォルダがデフォルトで開かれます。これにより、開発者はコンテナ内でホストのプロジェクトファイルにアクセスし、編集することができます。\n\nこの設定は、`.devcontainer/docker-compose.yml` ファイル内のボリュームマウント設定と連携して機能します。具体的には、以下のような設定が必要です。\n\n```yaml\nvolumes:\n  - ..:/workspaces:cached\n```",
+      "line": 9,
+      "selection": {
+        "start": {
+          "line": 10,
+          "character": 68
+        },
+        "end": {
+          "line": 10,
+          "character": 79
+        }
+      }
+    },
+    {
+      "file": ".devcontainer/devcontainer.json",
+      "description": "###  `.devcontainer/devcontainer.json` - `remoteEnv` プロパティ\n\nこのプロパティは、リモートコンテナ内で使用する環境変数を定義します。\n- `HOST_DIR`: 環境変数の名前です。\n    - `${localWorkspaceFolder}`: ホストマシン上のワークスペースフォルダのパスを指します。この変数は、VS Code が Dev Container に接続する際に動的に置き換えられます。",
+      "line": 12
+    },
+    {
+      "file": ".devcontainer/devcontainer.json",
+      "description": "###  `.devcontainer/devcontainer.json` - `initializeCommand`, `postCreateCommand`, `postAttachCommand`\n\nこれらの設定は、Dev Container のライフサイクルイベントに対して特定のスクリプトを実行するためのものです。\n\n[Dev Container metadata reference](https://containers.dev/implementors/json_reference/#lifecycle-scripts)\n\n#### `initializeCommand` プロパティ\n\n- 説明: Dev Container のビルドが開始される前に実行されるコマンドを指定します。\n- 目的: コンテナの初期化に必要な設定や準備を行うために使用されます。\n\n`.devcontainer/initialize.sh` スクリプトを実行して、必要なネットワークやディレクトリの作成などを行います。\n\n#### `postCreateCommand` プロパティ\n\n- 説明: Dev Container が作成された後に実行されるコマンドを指定します。\n- 目的: コンテナ内の環境設定や依存関係のインストールを行うために使用されます。\n\n`.devcontainer/post-create.sh` スクリプトを実行して、必要なパッケージのインストールや設定ファイルの配置などを行います。\n\n#### `postAttachCommand` プロパティ\n\n- 説明: Dev Container に接続された後に実行されるコマンドを指定します。\n- 目的: コンテナ内での開発環境の最終調整や、接続後に必要な設定を行うために使用されます。\n\n`.devcontainer/post-attach.sh` スクリプトを実行して、開発環境の最終設定やデバッグツールの起動などを行います。",
+      "line": 15,
+      "selection": {
+        "start": {
+          "line": 1,
+          "character": 6
+        },
+        "end": {
+          "line": 1,
+          "character": 42
+        }
+      }
+    },
+    {
+      "file": ".devcontainer/initialize.sh",
+      "description": "## Docker ネットワーク作成処理\n\nこのセクションでは、`initialize.sh` スクリプト内のネットワーク作成処理について説明します。\n\n\nこの処理により、指定された名前の Docker ネットワークが存在しない場合に自動的に作成され、存在する場合はそのまま使用されます。これにより、ネットワーク設定の一貫性が保たれ、手動での設定作業が不要になります。",
+      "line": 3,
+      "title": "`.devcontainer/initialize.sh` - Docker ネットワーク作成処理"
+    },
+    {
+      "file": ".devcontainer/initialize.sh",
+      "description": "## 1. ネットワーク名の定義:\n\n    - 検索および作成する Docker ネットワークの名前を変数 NETWORK_NAME に格納します。\n",
+      "line": 4
+    },
+    {
+      "file": ".devcontainer/initialize.sh",
+      "description": "### 2. ネットワークの存在確認:\n\n- `docker network ls` コマンドを使用して、現在存在する Docker ネットワークのリストを取得します。\n- `grep -q \"$NETWORK_NAME\"` で、リスト内に NETWORK_NAME が含まれているかどうかを確認します。\n- ネットワークが存在しない場合、条件が真となり、次のステップに進みます。\n",
+      "line": 7
+    },
+    {
+      "file": ".devcontainer/initialize.sh",
+      "description": "### 3. ネットワークの作成:\n\n- ネットワークが存在しない場合、メッセージを表示し、`docker network create $NETWORK_NAME` コマンドで新しいネットワークを作成します。\n",
+      "line": 8,
+      "selection": {
+        "start": {
+          "line": 3,
+          "character": 6
+        },
+        "end": {
+          "line": 4,
+          "character": 1
+        }
+      }
+    },
+    {
+      "file": ".devcontainer/initialize.sh",
+      "description": "\n### 4. ネットワークが既に存在する場合の処理:\n\n\n- ネットワークが既に存在する場合、メッセージを表示します。\n",
+      "line": 10
+    },
+    {
+      "file": ".devcontainer/post-create.sh",
+      "description": "### `.devcontaner/post-create.sh` スクリプトの説明\n\nこの `post-create.sh` スクリプトは、Dev Container が作成された後に実行される初期化スクリプトです。Bash の自動補完機能を設定します。\n",
+      "line": 1
+    },
+    {
+      "file": ".devcontainer/post-create.sh",
+      "description": "### Bash 自動補完の設定:\n\n#### 1. Bash 自動補完のインストール:\n\n- `sudo apt-get update`: パッケージリストを更新します。\n- `sudo apt-get install bash-completion`: Bash の自動補完機能を提供する `bash-completion` パッケージをインストールします。\n\n#### 2. Git 自動補完スクリプトのダウンロード:\n\n- `wget`: 指定された URL からファイルをダウンロードします。\n- `https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash`: Git の公式リポジトリから Git 自動補完スクリプトをダウンロードします。\n- `-O ~/.git-completion.bash`: ダウンロードしたファイルをホームディレクトリの `.git-completion.bash` として保存します。\n\n#### 3. Bashrc に自動補完スクリプトを追加:\n- `echo \"source ~/.git-completion.bash\" >> ~/.bashrc`: `.bashrc` ファイルに `source ~/.git-completion.bash` を追加します。これにより、Bash シェルが起動するたびに Git 自動補完スクリプトが読み込まれます。\n\n### 目的\n- **Bash 自動補完の設定**: スクリプトを使用して、Bash の自動補完機能をインストールし、設定します。これにより、コマンドラインでの操作が効率化されます。\n- **Git 自動補完の設定**: Git の自動補完スクリプトをダウンロードして設定することで、Git コマンドの補完機能を有効にします。これにより、Git コマンドの入力が簡単になります。\n",
+      "line": 4,
+      "selection": {
+        "start": {
+          "line": 4,
+          "character": 62
+        },
+        "end": {
+          "line": 4,
+          "character": 77
+        }
+      }
+    },
+    {
+      "file": ".devcontainer/post-attach.sh",
+      "description": "### `.devcontaner/post-attach.sh` スクリプトの説明\n\nこの `post-attach.sh` スクリプトは、Dev Container に接続された後に実行される初期化スクリプトです。Git の設定を行い、コンテナ内のワークスペースディレクトリを安全なディレクトリとして追加します。\n",
+      "line": 1
+    },
+    {
+      "file": ".devcontainer/post-attach.sh",
+      "description": "### 1. Git 設定\n\n`git config pull.rebase false`: Git のプル操作でリベースを行わないように設定します。\n`git config --global commit.template .gitmessage`: コミットメッセージのテンプレートを `.gitmessage` ファイルに設定します。",
+      "line": 3
+    },
+    {
+      "file": ".devcontainer/post-attach.sh",
+      "description": "### 2. 安全なディレクトリとして追加:\n\n`/workspaces` ディレクトリパスを安全なディレクトリとして Git に追加します。これにより、Git はこのディレクトリ内での操作を安全と見なします。\n",
+      "line": 7
+    },
+    {
+      "file": ".devcontainer/devcontainer.json",
+      "description": "###  `forwardPorts` プロパティ\n\nこのプロパティは、ホストマシンと Dev Container 間でフォワードするポートのリストを指定します。\n空の配列 `[]` は、現在フォワードするポートが設定されていないことを示しています。\n\n#### 仕組み\n**ポートフォワーディング**:\n\n`forwardPorts` プロパティにポート番号を追加することで、ホストマシンとコンテナ間で特定のポートをフォワードすることができます。\n例えば、`\"forwardPorts\": [3000, 8080]` と設定すると、ホストマシンのポート 3000 と 8080 がコンテナ内の対応するポートにフォワードされます。\n\n#### 目的\n\n**開発環境の利便性向上**:\n\nポートフォワーディングを設定することで、ホストマシンからコンテナ内で実行されているアプリケーションにアクセスしやすくなります。\n例えば、コンテナ内で実行されているウェブサーバーやデータベースに対して、ホストマシンのブラウザやクライアントツールから直接アクセスできます。\n設定例\n以下は、ポート 3000 と 8080 をフォワードする設定例です。\n\nこの設定により、ホストマシンのポート 3000 と 8080 がコンテナ内の対応するポートにフォワードされ、ホストマシンからコンテナ内のサービスにアクセスできるようになります。\n",
+      "line": 18,
+      "title": "`.devcontainer/devcontainer.json` - ``forwardPorts`プロパティ"
+    },
+    {
+      "file": ".devcontainer/devcontainer.json",
+      "description": "###  `.devcontainer/devcontainer.json` - `features` プロパティ\n\nこのプロパティは、Dev Container に追加する機能を定義します。各機能は、GitHub Container Registry (GHCR) から取得されます。\n\n詳細情報は [Features](https://containers.dev/features) で確認することができます。\n\n#### 各機能の説明\n\n**Docker Outside of Docker**:\n\n- `\"ghcr.io/devcontainers/features/docker-outside-of-docker:1\"`: コンテナ内で Docker コマンドを実行できるようにする機能です。これにより、コンテナ内から他のコンテナを管理できます。\n\n**Go**:\n\n- `\"ghcr.io/devcontainers/features/go:1\"`: Go 言語の開発環境を追加します。これにより、Go プログラムの開発が可能になります。\n\n**Python**:\n\n- `\"ghcr.io/devcontainers/features/python:1\"`: Python の開発環境を追加します。\n    - `installTools`: Python 開発ツールをインストールするかどうかを指定します。\n    - `version`: インストールする Python のバージョンを指定します。\n\n**Node.js**:\n\n-  `\"ghcr.io/devcontainers/features/node:1\"`: Node.js の開発環境を追加します。\n    - `nodeGypDependencies`: `node-gyp` の依存関係をインストールするかどうかを指定します。\n    - `version`: インストールする Node.js のバージョンを指定します。\n\n``Azure CLI``:\n\n- `\"ghcr.io/devcontainers/features/azure-cli:1\"`: Azure CLI を追加します。これにより、Azure のリソースを管理するためのコマンドラインツールが利用可能になります。\n\n#### 目的\n**開発環境の拡張**: `features` プロパティを使用することで、必要な開発ツールやランタイムを簡単に追加できます。これにより、開発環境を迅速に構築し、効率的に開発を進めることができます。\n\n**一貫性の確保**: 各機能をコンテナに追加することで、開発環境の一貫性を保ち、チーム全体で同じ環境を共有できます。\n\nこの設定を使用することで、Dev Container 内に必要なツールやランタイムを簡単に追加し、開発環境を効率的に構築することができます。",
+      "line": 19
+    },
+    {
+      "file": ".devcontainer/devcontainer.json",
+      "description": "###  `.devcontainer/devcontainer.json` - `customizations` プロパティ\n\nこのプロパティはVS Code のカスタマイズオプションを指定します。\n\n- 開発環境のカスタマイズ: customizations プロパティを使用することで、VS Code / Codespaces の設定や拡張機能をカスタマイズし、開発環境をより使いやすく、効率的にすることができます。\n- 一貫性の確保: チーム全体で同じ設定と拡張機能を使用することで、一貫性のある開発環境を維持できます。\n\n**vscode**:\nDev Container に関連する設定を含むプロパティです。\n\n**codespaces**:\nCodespaces に関連する設定を含むプロパティです。\n\n- `settings`: VS Code のエディタ設定を指定します。\n- `extensions`: VS Code にインストールする拡張機能のリストを指定します。\n",
+      "line": 34
+    }
+  ]
+}
